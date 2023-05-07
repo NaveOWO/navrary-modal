@@ -39,12 +39,12 @@
   "license": "ISC",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/NaveOWO/navrary-dialog.git"
+    "url": "git+https://github.com/NaveOWO/navrary-modal"
   },
   "bugs": {
-    "url": "https://github.com/NaveOWO/navrary-dialog/issues"
+    "url": "https://github.com/NaveOWO/navrary-modal/issues"
   },
-  "homepage": "https://github.com/NaveOWO/navrary-dialog#readme",
+  "homepage": "https://github.com/NaveOWO/navrary-modal#readme",
   "devDependencies": {
     "@types/styled-components": "^5.1.26",
     "@testing-library/jest-dom": "^5.16.5",
