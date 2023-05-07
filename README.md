@@ -1,46 +1,151 @@
-# Getting Started with Create React App
+### Navrary-modal
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+간단한 열고 닫는 기능을 가진 모들 라이브러리입니다.
 
-## Available Scripts
+### 설치방법
+```
+npm install navrary-modal
+```
 
-In the project directory, you can run:
+### 사용법
 
-### `npm start`
+⚠️ 해당 라이브러리는 `styled-components` & `typescript`를 사용합니다.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+1️⃣ Basic
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+```js
+import {Modal} from "navrary-modal"
 
-### `npm test`
+<Modal defaultOpen>
+  <Modal.Backdrop/>
+  <Modal.Trigger/>
+  <Modal.Contents>
+    {children}
+  </Modal.Contents>
+</Modal>
+```
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+- 모달의 구조는 반드시 `<Modal>`컴포넌트가 최상위 부모가 되어야합니다.
+- `<Modal>`컴포넌트 하위에 있는 모든 컴포넌트들은 순서, 위치, 스타일에 구애받지 않고 자유롭게 사용될 수 있습니다.
+- 각 컴포넌트들은 children을 받을수도 & 받지 않을수도 있습니다.
+- 기본 사용 형태는 위와 같습니다.
 
-### `npm run build`
+2️⃣ Options ( Optional )
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+```js
+function Outside() {
+  const [isOpen, setIsOpen[ = usestate(false);
+  
+  function openModal() {
+    setIsOpen(true)
+  }
+  
+  function closeModal() {
+    setIsOpen(false)
+  }
+  
+  return (
+  <Modal modalState={{isOpen,openModal,closeModal}}>
+    {children}
+  </Modal>
+  )
+}
+```
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+- modalState : 모달의 열림 & 닫힘 상태가 모달 컴포넌트 외부와 공유되어야 할 때 해당 상태를 <Modal>컴포넌트에 넣어줄 수 있습니다. <br/>
+전달하는 외부상태는 반드시 `{ isOpen : 모달이 열렸는지의 여부, openModal : 모달을 여는 함수, closeModal : 모달을 닫는 함수 }` 형태여아합니다.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+```js
+function Outside() {
+  
+  return (
+  <Modal defaultOpen>
+    {children}
+  </Modal>
+  )
+}
+```
 
-### `npm run eject`
+- defaultOpen : 모달이 trigger에 의해서가 아닌 자동으로 열리게 설정하고싶을 때 해당 옵션을 <Modal>컴포넌트에 넣어줄 수 있습니다.
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+- asChild : 컴포넌트의 스타일을 커스텀할 수 있는 옵션입니다. 이 옵션은 반드시 children과 함께 사용되어야 합니다. (3️⃣ 설명 참고)
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+3️⃣ Custom Style
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+모든 Modal의 하위 컴포넌트들은 props의 전달 없이 `asChild` 옵션을 통해 모든 스타일 커스텀이 가능합니다. <br/>
+(Trigger button의 스타일 커스텀의 예)
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+```js
 
-## Learn More
+function Outside() {
+  
+  return (
+  <Modal >
+    <Modal.Trigger asChild>
+      <CustomedTrigger/>
+    </Modal.Trigger>
+  </Modal>
+  )
+}
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+const CustomedTrigger = styled.button`
+  background-color : "yellow",
+`
+```
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+위와같이 `<Modal.Trigger>`의 자식으로 스타일링 된 Trigger을 생성한 뒤, <Modal.Trigger> 컴포넌트에 asChild 속성을 줍니다. <br/>
+그렇다면 스탕일링 된 Trigger 컴포넌트는 기존 <Modal.Trigger> 컴폰너트와 똑같은 기능을 수행할 수 있습니다. <br/>
+⚠️ 이때 스타일링 된 자식 컴포넌트는 반드시 1개여아합니다.
+
+```js
+function Outside() {
+  
+  return (
+  <Modal >
+    <Modal.Trigger asChild>
+      <YellowTrigger/>
+      <RedTrigger/>
+    </Modal.Trigger>
+  </Modal>
+  )
+}
+
+const YellowTrigger = styled.button`
+  background-color : "yellow",
+`
+
+const RedTrigger = styled.button`
+  background-color : "red",
+`
+// ❌ERROR❌
+
+function Outside() {
+  
+  return (
+  <Modal >
+    <Modal.Trigger asChild>
+      <YellowTrigger>
+        <SubStyle/>
+      </YellowTrigger>
+    </Modal.Trigger>
+  </Modal>
+  )
+}
+
+const YellowTrigger = styled.button`
+  background-color : "yellow",
+`
+
+const SubStyle = styled.button`
+  background-color : "red",
+`
+//⭕️GOOD⭕️
+```
+
+
+
+
+
+
+
+
